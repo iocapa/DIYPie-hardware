@@ -1,0 +1,18 @@
+{
+    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/platform/headers/**",
+        "${workspaceFolder}/platform/FreeRTOS-Kernel/include/**"
+    ],
+    "C_Cpp.default.defines": [
+        "__SAMD20G16B__=",
+        "DONT_USE_CMSIS_INIT="
+    ],
+    "C_Cpp.default.cStandard": "c99",
+    "files.associations": {
+        "platform.h": "c",
+        "samd20g16.h": "c",
+        "samd20.h": "c",
+        "samd20j15b.h": "c"
+    }
+}
