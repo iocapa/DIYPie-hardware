@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.15)
 
 # Print size
 function(target_print_size target)
@@ -13,14 +13,6 @@ function(target_linker_script target script)
     set_target_properties(${target} PROPERTIES LINK_DEPENDS "${script}")
 endfunction()
 
-# Platform
-set(PLATFORM_DEFINE "__SAMD20G16B__")
-
-# Paths
-set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/platform)
-set(RESOURCE_PATH ${PLATFORM_PATH}/resource)
-set(HEADERS_PATH ${PLATFORM_PATH}/headers) 
-
 # Could be moved externally in case of multiple toolchains
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/arm-none-eabi-gcc.cmake)
 
@@ -28,24 +20,30 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/arm-none-eabi-gcc.cmake)
 set(PROJECT_NAME "DIYPie-firmware")
 project(${PROJECT_NAME} LANGUAGES C)
 
+# Paths
+set(FREERTOS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel)
+set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/platform)
+
 # Include paths
 set(INCLUDES 
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PLATFORM_PATH}
-    ${HEADERS_PATH}
+    ${FREERTOS_PATH}/include
+    ${FREERTOS_PATH}/portable/GCC/ARM_CM0
+    ${PLATFORM_PATH}/include
 )
 
 # Sources
 set(SOURCES
-    ${PLATFORM_PATH}/startup_samd20.c
-    ${PLATFORM_PATH}/hal.c
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-)
-
-# Defines
-set(DEFINES
-    ${PLATFORM_DEFINE}
-    "DONT_USE_CMSIS_INIT"
+    ${FREERTOS_PATH}/croutine.c
+    ${FREERTOS_PATH}/event_groups.c
+    ${FREERTOS_PATH}/list.c
+    ${FREERTOS_PATH}/queue.c
+    ${FREERTOS_PATH}/tasks.c
+    ${FREERTOS_PATH}/timers.c
+    ${PLATFORM_PATH}/port.c
+    ${PLATFORM_PATH}/startup_samd20.c
+    ${PLATFORM_PATH}/pal.c
 )
 
 # Compilation options
@@ -70,11 +68,10 @@ set(LINK_OPTIONS
 
 # Project setup
 add_compile_options(${COMPILE_OPTIONS})
-add_compile_definitions(${DEFINES})
 add_link_options(${LINK_OPTIONS})
 include_directories(${INCLUDES})
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_linker_script(${PROJECT_NAME} ${RESOURCE_PATH}/samd20g16b_flash.ld)
+target_linker_script(${PROJECT_NAME} ${PLATFORM_PATH}/samd20g16b_flash.ld)
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 
 # Print sizes

@@ -27,7 +27,7 @@
  *
  */
 
-#include "samd20.h"
+#include "platform.h"
 
 /* Initialize segments */
 extern uint32_t _sfixed;

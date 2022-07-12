@@ -22,17 +22,18 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.AddPathSubstitute ("/home/iocapa/Documents/Projects/DIYPie-hardware/platform/resource", "$(ProjectDir)");
-  Project.AddPathSubstitute ("/home/iocapa/documents/projects/diypie-hardware/platform/resource", "$(ProjectDir)");
+  Project.AddPathSubstitute ("/home/iocapa/Documents/Projects/DIYPie-hardware/platform/debug", "$(ProjectDir)");
+  Project.AddPathSubstitute ("/home/iocapa/documents/projects/diypie-hardware/platform/debug", "$(ProjectDir)");
   Project.SetDevice ("ATSAMD20G16");
   Project.SetHostIF ("USB", "260106119");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M0.svd");
-  Project.AddSvdFile ("/home/iocapa/Documents/Projects/DIYPie-hardware/platform/resource/ATSAMD20G16.svd");
+  Project.AddSvdFile ("/home/iocapa/Documents/Projects/DIYPie-hardware/platform/debug/ATSAMD20G16.svd");
   //
   // User settings
   //
+  Project.SetOSPlugin ("FreeRTOSPlugin");
   File.Open ("/home/iocapa/Documents/Projects/DIYPie-hardware/build/DIYPie-firmware.elf");
 }
 
@@ -325,7 +326,7 @@ void _SetupTarget(void) {
   //
   SP = Target.ReadU32(VectorTableAddr);
   if (SP != 0xFFFFFFFF) {
-    Target.SetReg("SP", SP);
+    //Target.SetReg("SP", SP);
   } else {
     Util.Error("Project script error: failed to set initial SP", 1);
   }
@@ -334,7 +335,7 @@ void _SetupTarget(void) {
   //
   PC = Elf.GetEntryPointPC();
   if (PC != 0xFFFFFFFF) {
-    Target.SetReg("PC", PC);
+    //Target.SetReg("PC", PC);
   } else {
     Util.Error("Project script error: failed to set up entry point PC", 1);
   }
